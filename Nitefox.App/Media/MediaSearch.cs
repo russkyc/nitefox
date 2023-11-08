@@ -25,19 +25,27 @@ public class MediaSearch
 
     public async Task<IEnumerable<ISearchResult>> SearchAsync(string query, int limit = Int32.MaxValue, int skip = 0)
     {
-        var cleanQuery = query.ToCleanQueryString();
-        
-        if (query.Contains("album", StringComparison.InvariantCultureIgnoreCase))
+        try
         {
-            return await _spotifyClient.Search.GetAlbumsAsync(cleanQuery, skip, limit);
-        }
-        
-        if (query.Contains("playlist", StringComparison.InvariantCultureIgnoreCase))
-        {
-            return await  _spotifyClient.Search.GetPlaylistsAsync(cleanQuery, skip, limit);
-        }
+            var cleanQuery = query.ToCleanQueryString();
 
-        return await _spotifyClient.Search.GetTracksAsync(cleanQuery, skip, limit);
+            if (query.Contains("album", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return await _spotifyClient.Search.GetAlbumsAsync(cleanQuery, skip, limit);
+            }
+
+            if (query.Contains("playlist", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return await _spotifyClient.Search.GetPlaylistsAsync(cleanQuery, skip, limit);
+            }
+
+            return await _spotifyClient.Search.GetTracksAsync(cleanQuery, skip, limit);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return Enumerable.Empty<ISearchResult>();
+        }
     }
 
 }
