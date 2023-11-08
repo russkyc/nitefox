@@ -1,0 +1,138 @@
+﻿@page "/"
+
+@using Nitefox.App.Media
+@using Nitefox.App.Media.Types
+@using Nitefox.App.States
+@using Nitefox.App.Utilities
+@using Nitefox.Client.Shared.Components.Search
+@using SpotifyExplode.Search
+
+@inject MediaSearch MediaSearch
+@inject SearchState SearchState
+@inject MediaPlayerState MediaPlayerState
+
+<Animation Effect="@Effect.FadeIn" Speed="@Speed.Faster" Delay="@Delay.None" Class="flex h-full flex-col overflow-hidden">
+    <MudScrollbar Hide="@SearchState.IsLoadingResults" Class="absolute" Width="8" HoverColor="#424242" BorderRadius="5" Color="#383838" HoverWidth="8" />
+    <MudStack Class="flex h-full flex-col overflow-hidden">
+        <MudTextField class="flex shrink mx-3 rounded-lg" OnKeyDown="@OnKeyDown" DebounceInterval="500" @bind-Text="@SearchState.SearchQuery" Immediate="true" OnDebounceIntervalElapsed="@OnSearch" @bind-Value="@SearchState.SearchQuery" T="string" Placeholder="Search.." AdornmentColor="Color.Inherit" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined"></MudTextField>
+        <MudStack Class="flex h-full grow flex-col mb-3 overflow-auto">
+            @if (SearchState.SearchQuery.IsNullOrWhiteSpace() || @SearchState.SearchQuery.Length < 2)
+            {
+                <MudStack Class="flex m-auto align-self-center opacity-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.7" stroke="currentColor" class="mx-auto h-62 w-62">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 15.553z" />
+                    </svg>
+                    <MudText Align="Align.Center">Start typing to load results</MudText>
+                </MudStack>
+            }
+            else if (SearchState.IsLoadingResults)
+            {
+                if (!string.IsNullOrEmpty(SearchState.SearchQuery))
+                {
+                    <MudProgressCircular Class="m-auto h-48 w-48 align-self-center" Color="Color.Primary" Indeterminate="true"/>
+                }
+            }
+            else
+            {
+                <MudStack Spacing="4" Class="flex w-full align-content-start">
+                    @foreach (var result in SearchState.SearchResults)
+                    {
+                        if (result is TrackSearchResult track)
+                        {
+                            <SearchQueryCard @key="@(track.GetHashCode())" Type="@ResultType.Track" Title="@track.Title" Subtitle="@track.Artists.Select(artist => artist.Name).Take(3).ToDelimitedString()" Url="@track.Url" ImageUrl="@track.Album.Images[0].Url"/>
+                        }
+                        if (result is AlbumSearchResult album)
+                        {
+                            <SearchQueryCard @key="@(album.GetHashCode())" Type="@ResultType.Album" Id="@album.Id" Title="@album.Title" Subtitle="@album.Artists.Select(artist => artist.Name).Take(3).ToDelimitedString()" Url="@album.Url.Replace("track", "album")" ImageUrl="@album.Images[0].Url"/>
+                        }
+                        if (result is PlaylistSearchResult playlist)
+                        {
+                            <SearchQueryCard @key="@(playlist.GetHashCode())" Type="@ResultType.Playlist" Id="@playlist.Id" Title="@playlist.Title" Subtitle="@playlist.Owner.DisplayName" Url="@playlist.Url?.Replace("track", "playlist")"/>
+                        }
+                    }
+                    @if (SearchState.SearchResults.Count >= 15)
+                    {
+                        <MudButton OnClick="@OnLoadMore" Class="flex px-auto mx-3" Variant="Variant.Text">
+                            <MudText>Load More..</MudText>
+                        </MudButton>
+                    }
+                </MudStack>
+            }
+        </MudStack>
+    </MudStack>
+</Animation>
+@code {
+
+    protected override void OnInitialized()
+    {
+        MediaPlayerState.PropertyChanged += (_, _) => StateHasChanged();
+        SearchState.PropertyChanged += (_, _) => StateHasChanged();
+    }
+
+    private async Task OnSearch()
+    {
+        await SearchAsync();
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key != "Enter") return;
+        await SearchAsync();
+    }
+
+    private async Task SearchAsync()
+    {
+        MediaPlayerState.Stop();
+        
+        try
+        {
+            if (SearchState.IsLoadingResults) return;
+            
+            SearchState.IsLoadingResults = true;
+            SearchState.ClearSearchResults();
+
+            if (string.IsNullOrWhiteSpace(SearchState.SearchQuery) || SearchState.SearchQuery.Length < 2)
+            {
+                SearchState.IsLoadingResults = false;
+                return;
+            }
+            
+            var results = await MediaSearch.SearchAsync(SearchState.SearchQuery, 15);
+            
+            SearchState.IsLoadingResults = false;
+            
+            foreach (var searchResult in results)
+            {
+                SearchState.AddSearchResult(searchResult);
+                await Task.Delay(50);
+            }
+        }
+        catch (Exception)
+        {
+            //TODO: Add catch on load result exception
+        }
+    }
+
+    private async Task OnLoadMore()
+    {
+        try
+        {
+            var results = await MediaSearch.SearchAsync(
+                SearchState.SearchQuery,
+                15,
+                SearchState.SearchResults.Count);
+            
+            foreach (var searchResult in results)
+            {
+                SearchState.AddSearchResult(searchResult);
+                await Task.Delay(50);
+            }
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+}

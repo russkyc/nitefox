@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="BlazorAnimation" Version="2.2.0" />
+    <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="6.6.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView" Version="7.0.13" />
+    <PackageReference Include="MudBlazor" Version="6.11.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Watch Include="**\*\*\*.cs" />
+    <Watch Include="**\*\*\*.css" />
+    <Watch Include="**\*\*\*.razor" />
+    <Watch Include="**\*\*\*.razor.cs" />
+    <Watch Include="**\*\*\*.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="wwwroot\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="Shared\MainLayout.razor" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nitefox.App\Nitefox.App.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nitefox.App\Nitefox.App.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\launchSettings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </None>
+    <Content Remove="wwwroot\index.html" />
+    <None Include="wwwroot\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Remove="wwwroot\images\nitefox-logo.svg" />
+    <None Include="wwwroot\images\nitefox-logo.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Remove="wwwroot\scripts\tailwind.js" />
+    <None Include="wwwroot\scripts\tailwind.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

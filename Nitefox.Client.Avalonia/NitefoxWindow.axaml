@@ -1,0 +1,30 @@
+<windowing:AppWindow
+    x:Class="Nitefox.Client.Avalonia.NitefoxWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalonia="clr-namespace:Nitefox.Client.Avalonia"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:windowing="clr-namespace:FluentAvalonia.UI.Windowing;assembly=FluentAvalonia"
+    Title="Nitefox"
+    Width="650"
+    Height="700"
+    MinWidth="650"
+    MinHeight="600"
+    Padding="2,0,2,2"
+    d:DesignHeight="600"
+    d:DesignWidth="450"
+    x:DataType="avalonia:NitefoxWindow"
+    Background="#191919"
+    Icon="/Assets/nitefox_icon.ico"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <DockPanel>
+        <BlazorWebView
+            Name="BlazorWebView"
+            DockPanel.Dock="Bottom"
+            HostPage="wwwroot/index.html"
+            IsVisible="False"
+            NavigationCompleted="BlazorWebView_OnNavigationCompleted" />
+    </DockPanel>
+</windowing:AppWindow>
