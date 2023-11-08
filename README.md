@@ -19,17 +19,22 @@ With Nitefox, you can easily download entire spotify playlists or individual tra
 <h3 align="center">💻 Supported Platforms 💻</h3>
 
 #### Web
+
 - [x] Blazor-Server (Self-Hosted)
+
 
 #### Desktop
 
--[x] Windows
--[x] Linux (Build supported, not yet tested)
--[x] Mac/Metal (Build supported, not yet tested)
+- [x] Windows
+- [x] Linux (Build supported, not yet tested)
+- [x] Mac/Metal (Build supported, not yet tested)
+
 
 #### Mobile
--[ ] Android (Planned)
--[ ] IOS (Planned)
+
+- [ ] Android (Planned)
+- [ ] IOS (Planned)
+
 
 <h3 align="center">❤️ Donate ❤️</h3>
 
@@ -38,6 +43,6 @@ But creating and maintaining software takes time. Donating to this project not o
 supports its development, it also helps me afford more time to create tools like this
 for the community. ❤
 
-**Note**
+> **Note**
 > Nitefox does not download from spotify directly due to restrictions and copyright. What it does is find out if it is available
 > as a video in youtube and fetch the audio stream for download automatically. Nitefox is only for personal, non-commercial use. Its creators are not liable for any abuse or misuse of the software
