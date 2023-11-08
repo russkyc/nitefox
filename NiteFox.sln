@@ -1,16 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitefox.Client", "Nitefox.Client\Nitefox.Client\Nitefox.Client.csproj", "{CAE08668-441B-4F7C-A356-E3E19AC8FF0F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitefox.Client.Android", "Nitefox.Client\Nitefox.Client.Android\Nitefox.Client.Android.csproj", "{298BDD31-B011-43E7-B901-C3B2FD3B77E3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitefox.Client.Desktop", "Nitefox.Client\Nitefox.Client.Desktop\Nitefox.Client.Desktop.csproj", "{6C747869-999F-41E0-977C-455E7D521ED1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitefox.Client.Browser", "Nitefox.Client\Nitefox.Client.Browser\Nitefox.Client.Browser.csproj", "{6539B3CA-827E-4C8B-A48F-697918569F94}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{352F0BE6-F655-41D9-A331-83B317354E9D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitefox.App", "Nitefox.App\Nitefox.App.csproj", "{87F7DA51-0867-4F04-ADA8-9396DAA235E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitefox.Client.Shared", "Nitefox.Client.Shared\Nitefox.Client.Shared.csproj", "{EB890DC7-A03F-406B-9E2E-47E1337DA4C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitefox.Client.Avalonia", "Nitefox.Client.Avalonia\Nitefox.Client.Avalonia.csproj", "{A60A5804-4DB8-47EC-9E53-3DB41C0E8B3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,30 +12,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CAE08668-441B-4F7C-A356-E3E19AC8FF0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CAE08668-441B-4F7C-A356-E3E19AC8FF0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CAE08668-441B-4F7C-A356-E3E19AC8FF0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CAE08668-441B-4F7C-A356-E3E19AC8FF0F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{298BDD31-B011-43E7-B901-C3B2FD3B77E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{298BDD31-B011-43E7-B901-C3B2FD3B77E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{298BDD31-B011-43E7-B901-C3B2FD3B77E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{298BDD31-B011-43E7-B901-C3B2FD3B77E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C747869-999F-41E0-977C-455E7D521ED1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C747869-999F-41E0-977C-455E7D521ED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C747869-999F-41E0-977C-455E7D521ED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C747869-999F-41E0-977C-455E7D521ED1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6539B3CA-827E-4C8B-A48F-697918569F94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6539B3CA-827E-4C8B-A48F-697918569F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6539B3CA-827E-4C8B-A48F-697918569F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6539B3CA-827E-4C8B-A48F-697918569F94}.Release|Any CPU.Build.0 = Release|Any CPU
 		{87F7DA51-0867-4F04-ADA8-9396DAA235E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{87F7DA51-0867-4F04-ADA8-9396DAA235E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87F7DA51-0867-4F04-ADA8-9396DAA235E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87F7DA51-0867-4F04-ADA8-9396DAA235E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB890DC7-A03F-406B-9E2E-47E1337DA4C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB890DC7-A03F-406B-9E2E-47E1337DA4C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB890DC7-A03F-406B-9E2E-47E1337DA4C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB890DC7-A03F-406B-9E2E-47E1337DA4C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A60A5804-4DB8-47EC-9E53-3DB41C0E8B3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A60A5804-4DB8-47EC-9E53-3DB41C0E8B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A60A5804-4DB8-47EC-9E53-3DB41C0E8B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A60A5804-4DB8-47EC-9E53-3DB41C0E8B3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{298BDD31-B011-43E7-B901-C3B2FD3B77E3} = {352F0BE6-F655-41D9-A331-83B317354E9D}
-		{6539B3CA-827E-4C8B-A48F-697918569F94} = {352F0BE6-F655-41D9-A331-83B317354E9D}
-		{6C747869-999F-41E0-977C-455E7D521ED1} = {352F0BE6-F655-41D9-A331-83B317354E9D}
 	EndGlobalSection
 EndGlobal

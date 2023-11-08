@@ -7,27 +7,22 @@ A clean and modern app to download your favorite Spotify tracks, albums and play
 With Nitefox, you can easily download entire spotify playlists or individual tracks with just a single click!
 </p>
 
-![](.github/resources/nitefox-preview.png)
+![](.github/resources/nitefox-app-preview.png)
 
-<h3 align="center">✨ Features ✨</h3>
+<h3 align="center">Features</h3>
 
 - **Search and audio preview**
 - **Song downloads**
 - **Playlist and Album Downloads**
 - **Simultaneous Downloading**
 
-<h3 align="center">💻 Supported Platforms 💻</h3>
-
-#### Web
-
-- [x] Blazor-Server (Self-Hosted)
-
+<h3 align="center">Supported Platforms</h3>
 
 #### Desktop
 
 - [x] Windows
-- [x] Linux (Build supported, not yet tested)
-- [x] Mac/Metal (Build supported, not yet tested)
+- [ ] Linux (Build supported, not yet tested)
+- [ ] Mac/Metal (Build supported, not yet tested)
 
 
 #### Mobile
@@ -36,7 +31,7 @@ With Nitefox, you can easily download entire spotify playlists or individual tra
 - [ ] IOS (Planned)
 
 
-<h3 align="center">❤️ Donate ❤️</h3>
+<h3 align="center">Donate ️</h3>
 
 This project is done freely, and made available for the community to use.
 But creating and maintaining software takes time. Donating to this project not only

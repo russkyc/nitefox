@@ -1,0 +1,102 @@
+﻿@page "/settings"
+@using Nitefox.App.Services.Interfaces
+@using Nitefox.App.Configuration
+@using System.Diagnostics
+
+@inject NitefoxConfig NitefoxConfig
+@inject IFileService FileService
+<Animation Class="flex flex-grow flex-col h-full" Effect="@Effect.FadeIn" Speed="@Speed.Faster" Delay="@Delay.None">
+    <div class="mt-3 flex flex-grow flex-col h-full">
+        <p class="mx-3 mb-4 text-[16pt] font-medium text-white">Settings</p>
+        <p class="m-3 text-lg text-white">App Data Folders</p>
+        <div class="mx-3 mb-3 flex flex-row overflow-hidden">
+            <div class="overflow-hidden mr-3 flex w-7/12 flex-grow">
+                <p class="w-full truncate text-ellipsis my-auto rounded-md border-2 border-shark-800 p-3 text-shark-200">@NitefoxConfig.DownloadLocation</p>
+            </div>
+            <button @onclick="@OnOpenSongDirectory" class="flex-col m-auto flex w-4/12 rounded-md bg-shark-800 px-4 py-3 text-white active:bg-shark-900">
+                <div class="mx-auto flex flex-row">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="my-auto mr-1 flex h-5 w-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/>
+                    </svg>
+                    <p class="my-auto">Download Folder</p>
+                </div>
+            </button>
+        </div>
+        <div class="mx-3 mb-3 flex flex-row overflow-hidden">
+            <div class="overflow-hidden mr-3 flex w-7/12 flex-grow">
+                <p class="w-full truncate text-ellipsis my-auto rounded-md border-2 border-shark-800 p-3 text-shark-200">@NitefoxConfig.FfmpegLocation</p>
+            </div>
+            <button @onclick="@OnOpenFfmpegDirectory" class="flex-col m-auto flex w-4/12 rounded-md bg-shark-800 px-4 py-3 text-white active:bg-shark-900">
+                <div class="mx-auto flex flex-row">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="my-auto mr-1 flex h-5 w-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/>
+                    </svg>
+                    <p class="my-auto">Ffmpeg Folder</p>
+                </div>
+            </button>
+        </div>
+        <div class="mx-3 mb-3 flex flex-row overflow-hidden">
+            <div class="overflow-hidden mr-3 flex w-7/12 flex-grow">
+                <p class="w-full truncate text-ellipsis my-auto rounded-md border-2 border-shark-800 p-3 text-shark-200">@NitefoxConfig.TempFilesLocation</p>
+            </div>
+            <button @onclick="@OnOpenTempDirectory" class="flex-col m-auto flex w-4/12 rounded-md bg-shark-800 px-4 py-3 text-white active:bg-shark-900">
+                <div class="mx-auto flex flex-row">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="my-auto mr-1 flex h-5 w-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/>
+                    </svg>
+                    <p class="my-auto">Temp Folder</p>
+                </div>
+            </button>
+        </div>
+        <div class="m-auto flex flex-row text-shark-500">
+            <p class="my-auto">created with ❤️ by</p>
+            <button class="flex flex-row ml-2 text-white my-auto" @onclick="OnOpenProfile">
+                <img class="my-auto flex rounded-full w-6 h-6 mr-2" src="https://avatars.githubusercontent.com/u/32549126?v=4">
+                @("@russkyc")
+            </button>
+          </div>
+    </div>
+</Animation>
+
+
+@code {
+
+    private async Task OnOpenSongDirectory()
+    {
+        var downloadsPath = await FileService.OpenFolder();
+        if (downloadsPath is null) return;
+        NitefoxConfig.DownloadLocation = $"{downloadsPath}\\";
+    }
+    
+    private async Task OnOpenFfmpegDirectory()
+    {
+        var ffmpegPath = await FileService.OpenFolder();
+        if (ffmpegPath is null) return;
+        NitefoxConfig.FfmpegLocation = $"{ffmpegPath}\\";
+    }
+    
+    private async Task OnOpenTempDirectory()
+    {
+        var tempFilesPath = await FileService.OpenFolder();
+        if (tempFilesPath is null) return;
+        NitefoxConfig.TempFilesLocation = $"{tempFilesPath}\\";
+    }
+
+    private void OnOpenProfile()
+    {
+        var url = "https://github.com/russkyc";
+
+        if (OperatingSystem.IsLinux())
+        {
+            Process.Start ("xdg-open", url);
+        }
+        
+        ProcessStartInfo psi = new ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        };
+        Process.Start (psi);
+    }
+
+}

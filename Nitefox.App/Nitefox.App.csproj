@@ -4,10 +4,26 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PublishAot>true</PublishAot>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FFMpegCore" Version="5.1.0" />
+      <PackageReference Include="GithubReleaseDownloader" Version="1.0.0" />
+      <PackageReference Include="PropertyChanged.SourceGenerator" Version="1.0.8">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Russkyc.Configuration" Version="1.0.1" />
+      <PackageReference Include="SharpCompress" Version="0.34.1" />
       <PackageReference Include="SpotifyExplode" Version="1.0.7" />
+      <PackageReference Include="YoutubeExplode" Version="6.3.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="nitefox.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

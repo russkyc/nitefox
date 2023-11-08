@@ -1,0 +1,292 @@
+﻿@using Nitefox.App.Media
+@using System.Diagnostics.CodeAnalysis
+@using Nitefox.App.Media.Types
+@using Nitefox.App.States
+@using Nitefox.App.Utilities
+@using Animation = MudBlazor.Animation
+
+@namespace Nitefox.Client.Shared.Components.Search
+
+@inject MediaPlayerState MediaPlayerState
+@inject MediaDownloader MediaDownloader
+@inject MetadataService MetadataService
+@inject ISnackbar SnackBar
+
+<Animation Effect="@Effect.FadeInUp" Speed="@Speed.Fast" Delay="@Delay.None">
+    <div class="bg-shark-950 flex w-full flex-row px-3">
+        <object class="bg-shark-800 flex h-20 w-20 shrink-0 rounded-lg">
+            @if (!ImageUrl.IsNullOrWhiteSpace())
+            {
+                <Animation Effect="@Effect.FadeIn" Speed="@Speed.Slow" Delay="@Delay.None">
+                    <img class="fixed z-0 h-20 w-20 rounded-lg" src="@ImageUrl" alt=""/>
+                </Animation>
+            }
+            else
+            {
+                <svg class="m-auto h-8 w-8 rounded-lg opacity-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                </svg>
+            }
+            @if (Type is ResultType.Track && !_isDownloaded)
+            {
+                if (_isPreviewStreamLoading)
+                {
+                    <MudProgressCircular Class="flex rounded-lg m-auto z-10 h-20 w-20 text-white" StrokeWidth="3" Indeterminate="true" Size="Size.Medium" Color="Color.Inherit"/>
+                }
+                else if (MediaPlayerState.IsPlaying($"{Title} - {Subtitle}"))
+                {
+                    <button class="fixed rounded-lg m-auto z-10 p-5 h-20 w-20 text-white opacity-75" @onclick="@Preview">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm5-2.25A.75.75 0 017.75 7h.5a.75.75 0 01.75.75v4.5a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75v-4.5zm4 0a.75.75 0 01.75-.75h.5a.75.75 0 01.75.75v4.5a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75v-4.5z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                }
+                else
+                {
+                    <button class="transition duration-150 ease-in-out fixed rounded-lg m-auto z-10 p-5 h-20 w-20 text-white hover:opacity-75 opacity-0" @onclick="@Preview">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm6.39-2.908a.75.75 0 01.766.027l3.5 2.25a.75.75 0 010 1.262l-3.5 2.25A.75.75 0 018 12.25v-4.5a.75.75 0 01.39-.658z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                }
+            }
+        </object>
+        <div class="mx-3 flex flex-grow flex-col overflow-hidden">
+            <div class="my-auto flex flex-col">
+                <p class="truncate text-ellipsis text-base font-medium text-shark-100">@Title</p>
+                <p class="text-shark-400 truncate text-ellipsis text-sm">@Subtitle</p>
+                <div class="flex flex-row space-x-1">
+                    <span class="mt-2 h-min w-min rounded-full bg-spring-green-500 px-2 py-[0.1rem] text-sm text-white">@Type</span>
+                    @if (Type is ResultType.Playlist || Type is ResultType.Album)
+                    {
+                        if (TrackCount > 1)
+                        {
+                            <span class="flex flex-row mt-2 h-min w-max rounded-full bg-shark-900 px-2 py-[0.1rem] text-sm text-shark-300">
+                                @TrackCount @(TrackCount > 1 ? "Songs" : "Song")
+                            </span>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="flex">
+            @if (_isDownloaded)
+            {
+                <button class="flex flex-row flex-row space-x-1 m-auto rounded-lg bg-shark-950 px-4 py-3 text-shark-700">
+                    <div class="m-auto flex flex-row">
+                        <svg class="my-auto flex h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 3.5A1.5 1.5 0 014.5 2h6.879a1.5 1.5 0 011.06.44l4.122 4.12A1.5 1.5 0 0117 7.622V16.5a1.5 1.5 0 01-1.5 1.5h-11A1.5 1.5 0 013 16.5v-13zm10.857 5.691a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 00-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/>
+                        </svg>
+                        <p>Saved</p>
+                    </div>
+                </button>
+            }
+            else if (_isDownloading)
+            {
+                <button @onclick="@OnDownload" class="flex flex-row flex-row space-x-1 m-auto rounded-lg bg-spring-green-500 px-4 py-3 text-white active:bg-spring-green-600">
+                    <div class="m-auto flex flex-row">
+                        <svg class="my-auto flex h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd"/>
+                        </svg>
+                        @if (Type is ResultType.Album || Type is ResultType.Playlist)
+                        {
+                            <p class="my-auto">Saving (@DownloadCount/@TrackCount)</p>
+                        }
+                        else
+                        {
+                            <p class="my-auto">Saving</p>
+                        }
+                    </div>
+                </button>
+            }
+            else
+            {
+                <button @onclick="@OnDownload" class="m-auto flex flex-row rounded-lg bg-spring-green-500 px-4 py-3 text-white active:bg-spring-green-600">
+                    <div class="m-auto flex flex-row">
+                        <svg class="my-auto flex h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clip-rule="evenodd" />
+                        </svg>
+                        <p class="my-auto">Download</p>
+                    </div>
+                </button>
+            }
+        </div>
+    </div>
+</Animation>
+
+@code{
+
+    private bool _isPlaying;
+    private bool _isDownloaded;
+    private bool _isDownloading;
+    private bool _isPreviewStreamLoading;
+    private string _previewStreamUrl;
+
+    [Parameter] public string Id { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Subtitle { get; set; }
+    [Parameter] public string Url { get; set; }
+    [Parameter] public string ImageUrl { get; set; }
+    [Parameter] public int TrackCount { get; set; }
+    [Parameter] public ResultType Type { get; set; }
+    [Parameter] public int DownloadCount { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _isDownloaded = Type switch {
+                ResultType.Track => MediaDownloader.GetIfDownloadExists(Title, Subtitle),
+                ResultType.Album => MediaDownloader.GetIfDownloadCollectionExists(Title, TrackCount),
+                ResultType.Playlist => MediaDownloader.GetIfDownloadCollectionExists(Title, TrackCount),
+                _ => throw new ArgumentOutOfRangeException()
+                };
+            ImageUrl = Type switch {
+                ResultType.Track => ImageUrl,
+                ResultType.Album => await MetadataService.GetAlbumImageUrl(Url),
+                ResultType.Playlist => await MetadataService.GetPlaylistImageUrl(Url),
+                _ => throw new ArgumentOutOfRangeException()
+                };
+            TrackCount = Type switch {
+                ResultType.Track => 1,
+                ResultType.Album => await MetadataService.GetAlbumTrackCount(Url),
+                ResultType.Playlist => await MetadataService.GetPlaylistTrackCount(Url),
+                _ => throw new ArgumentOutOfRangeException()
+                };
+            await InvokeAsync(StateHasChanged);
+            MediaPlayerState.PropertyChanged += (_, _) => StateHasChanged();
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            Console.WriteLine(e);
+        }
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine(e);
+        }
+
+    }
+
+    [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+    private async Task OnDownload()
+    {
+        if (_isDownloading) return;
+        
+        if (Type is ResultType.Track)
+        {
+            _isDownloading = true;
+            var track = await MediaDownloader.Download(Title, Url, Subtitle);
+            if (!track.IsDownloaded)
+            {
+                _isDownloading = false;
+                
+                SnackBar.Add($"{track.Name} - {track.Author} failed to download.", Severity.Normal, config =>
+                {
+                    config.ActionVariant = Variant.Filled;
+                    config.ActionColor = Color.Default;
+                    config.ShowCloseIcon = false;
+                });
+                return;
+            }
+            
+            _isDownloaded = true;
+                
+            SnackBar.Clear();
+            SnackBar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            SnackBar.Add($"Song {Title} - {Subtitle} successfully downloaded.", Severity.Normal, config =>
+            {
+                config.ActionVariant = Variant.Filled;
+                config.ActionColor = Color.Default;
+                config.ShowCloseIcon = false;
+            });
+            return;
+        }
+        if (Type is ResultType.Album)
+        {
+            _isDownloading = true;
+            
+            await foreach (var track in MediaDownloader.DownloadAlbum(Title, Id))
+            {
+                if (track.IsDownloaded is false)
+                {
+                    SnackBar.Add($"{track.Name} - {track.Author} failed to download.", Severity.Normal, config =>
+                    {
+                        config.ActionVariant = Variant.Filled;
+                        config.ActionColor = Color.Default;
+                        config.ShowCloseIcon = false;
+                    });
+                    _isDownloading = false;
+                    await InvokeAsync(StateHasChanged);
+                    return;
+                }
+
+                DownloadCount++;
+                await InvokeAsync(StateHasChanged);
+                
+                SnackBar.Clear();
+                SnackBar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+                SnackBar.Add($"{track.Name} - {track.Author} successfully downloaded.", Severity.Normal, config =>
+                {
+                    config.ActionVariant = Variant.Filled;
+                    config.ActionColor = Color.Default;
+                    config.ShowCloseIcon = false;
+                });
+            }
+            _isDownloaded = true;
+            return;
+        }
+        
+        SnackBar.Clear();
+        SnackBar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            
+        _isDownloading = true;
+
+        await foreach (var track in MediaDownloader.DownloadPlaylist(Title, Id))
+        {
+            if (track.IsDownloaded is false)
+            {
+                _isDownloading = false;
+                
+                SnackBar.Add($"{track.Name} - {track.Author} failed to download.", Severity.Normal, config =>
+                {
+                    config.ActionVariant = Variant.Filled;
+                    config.ActionColor = Color.Default;
+                    config.ShowCloseIcon = false;
+                });
+                await InvokeAsync(StateHasChanged);
+                return;
+            }
+
+            DownloadCount++;
+            await InvokeAsync(StateHasChanged);
+            SnackBar.Add($"{track.Name} - {track.Author} successfully downloaded.", Severity.Normal, config =>
+            {
+                config.ActionVariant = Variant.Filled;
+                config.ActionColor = Color.Default;
+                config.ShowCloseIcon = false;
+            });
+        }
+        _isDownloaded = true;
+    }
+
+    private async Task Preview()
+    {
+        _isPlaying = !_isPlaying;
+        if (!_isPlaying)
+        {
+            MediaPlayerState.Stop();
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+
+        _isPreviewStreamLoading = true;
+        await InvokeAsync(StateHasChanged);
+            
+        var stream = await MetadataService.GetPreviewStream(Url);
+        MediaPlayerState.Play($"{Title} - {Subtitle}", stream);
+        _isPreviewStreamLoading = false;
+        await InvokeAsync(StateHasChanged);
+        
+    }
+
+}

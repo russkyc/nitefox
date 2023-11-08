@@ -1,0 +1,67 @@
+﻿@namespace Nitefox.Client.Shared.Shared
+
+@using Nitefox.Client.Shared.Components
+@inherits LayoutComponentBase
+
+@inject NavigationManager NavigationManager
+
+<MudThemeProvider IsDarkMode="true" Theme="@_nitefoxTheme"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar DisableGutters="true" Elevation="0" Class="p-0 m-0">
+        <div class="flex opacity-0 flex-row my-auto mx-3 align-self-end rounded-lg bg-[#1f1f1f] active:bg-[#1a1a1a] p-3 text-white" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/>
+            </svg>
+        </div>
+        <MudImage Class="flex h-10 mx-auto my-auto" Src="images/nitefox-logo.svg"></MudImage>
+        @if (NavigationManager.Uri.EndsWith("settings"))
+        {
+            <button @onclick="@OpenHome" class="flex flex-row my-auto mx-3 align-self-end rounded-lg bg-[#1f1f1f] active:bg-[#1a1a1a] p-3 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/>
+                </svg>
+            </button>
+        }
+        else
+        {
+            <button @onclick="@OpenSettings" class="flex flex-row my-auto mx-3 align-self-end rounded-lg bg-[#1f1f1f] active:bg-[#1a1a1a] p-3 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
+                </svg>
+            </button>
+        }
+        
+    </MudAppBar>
+    <MudMainContent Class="flex flex-column h-screen">
+        @Body
+    </MudMainContent>
+    <AudioPlayer/>
+</MudLayout>
+@code {
+
+    readonly MudTheme _nitefoxTheme = new()
+    {
+        PaletteDark = new PaletteDark()
+        {
+            Primary = "#04e18c",
+            Background = "#222222",
+            ActionDefault = "#6a6a6a",
+            AppbarBackground = "#222222"
+        },
+        
+    };
+
+    private void OpenSettings()
+    {
+        NavigationManager.NavigateTo("/settings");
+    }
+
+    private void OpenHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+}
