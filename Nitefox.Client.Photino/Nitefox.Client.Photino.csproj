@@ -2,8 +2,9 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ApplicationIcon>nitefox_icon.ico</ApplicationIcon>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

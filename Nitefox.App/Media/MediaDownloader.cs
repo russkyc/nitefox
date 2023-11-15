@@ -17,28 +17,16 @@ using Nitefox.App.Utilities;
 
 namespace Nitefox.App.Media;
 
-public class MediaDownloader
+public class MediaDownloader(
+    IFileService fileService,
+    FfmpegService ffmpegService,
+    NitefoxConfig nitefoxConfig,
+    MetadataService metadataService)
 {
-    private readonly IFileService _fileService;
-    private readonly DataStore _mediaDataStore;
-    private readonly FfmpegService _ffmpegService;
-    private readonly NitefoxConfig _nitefoxConfig;
-    private readonly MetadataService _metadataService;
-
-    public MediaDownloader(
-        IFileService fileService,
-        FfmpegService ffmpegService,
-        NitefoxConfig nitefoxConfig,
-        MetadataService metadataService)
-    {
-        _fileService = fileService;
-        _ffmpegService = ffmpegService;
-        _nitefoxConfig = nitefoxConfig;
-        _metadataService = metadataService;
-        _mediaDataStore = new DataStore($"{_nitefoxConfig.DownloadLocation}downloads.json",
-            reloadBeforeGetCollection: true);
-    }
     
+    private readonly DataStore _mediaDataStore = new ($"{nitefoxConfig.DownloadLocation}downloads.json",
+        reloadBeforeGetCollection: true);
+
     public async Task<TrackDownload> Download(string title, string url, string author, string? collection = null)
     {
         var trackDownload = new TrackDownload
@@ -51,12 +39,12 @@ public class MediaDownloader
         
         try
         {
-            await _ffmpegService.DownloadFfmpeg();
+            await ffmpegService.DownloadFfmpeg();
             
-            _ffmpegService.ConfigureFfmpeg();
-            _fileService.SetupDirectories();
+            ffmpegService.ConfigureFfmpeg();
+            fileService.SetupDirectories();
             
-            var streamUrl = await _metadataService.GetYoutubeSongStream(url);
+            var streamUrl = await metadataService.GetYoutubeSongStream(url);
             
             if (string.IsNullOrWhiteSpace(streamUrl))
             {
@@ -65,12 +53,12 @@ public class MediaDownloader
             
             if (collection is not null)
             {
-                var songAlbumPath = $"{_nitefoxConfig.DownloadLocation}{collection}\\";
+                var songAlbumPath = $"{nitefoxConfig.DownloadLocation}{collection}\\";
 
                 trackDownload.Collection = collection;
                 trackDownload.SavePath = $"{songAlbumPath}{songSaveName}";
                 trackDownload.IsDownloaded =
-                    await _ffmpegService.StreamConvert(streamUrl, $"{songAlbumPath}{songSaveName}");
+                    await ffmpegService.StreamConvert(streamUrl, $"{songAlbumPath}{songSaveName}");
                 
                 if (trackDownload.IsDownloaded)
                 {
@@ -81,9 +69,9 @@ public class MediaDownloader
                 return trackDownload;
             }
 
-            trackDownload.SavePath = $"{_nitefoxConfig.DownloadLocation}{songSaveName}";
+            trackDownload.SavePath = $"{nitefoxConfig.DownloadLocation}{songSaveName}";
             trackDownload.IsDownloaded =
-                await _ffmpegService.StreamConvert(streamUrl, $"{_nitefoxConfig.DownloadLocation}{songSaveName}");
+                await ffmpegService.StreamConvert(streamUrl, $"{nitefoxConfig.DownloadLocation}{songSaveName}");
             
             if (trackDownload.IsDownloaded)
             {
@@ -102,9 +90,9 @@ public class MediaDownloader
     
     public async IAsyncEnumerable<TrackDownload> DownloadAlbum(string title, string id)
     {
-        _fileService.CreateMediaDirectory(_nitefoxConfig.DownloadLocation, title.ToPathSafeString());
+        fileService.CreateMediaDirectory(nitefoxConfig.DownloadLocation, title.ToPathSafeString());
 
-        foreach (var track in await _metadataService.GetAlbumTracksMetadata(id, title))
+        foreach (var track in await metadataService.GetAlbumTracksMetadata(id, title))
         {
             var authors = track.Artists.Select(artist => artist.Name).Take(3).ToDelimitedString();
             yield return await Download(track.Title, track.Url, authors, title.ToPathSafeString());
@@ -113,9 +101,9 @@ public class MediaDownloader
     
     public async IAsyncEnumerable<TrackDownload> DownloadPlaylist(string title, string id)
     {
-        _fileService.CreateMediaDirectory(_nitefoxConfig.DownloadLocation, title.ToPathSafeString());
+        fileService.CreateMediaDirectory(nitefoxConfig.DownloadLocation, title.ToPathSafeString());
 
-        foreach (var track in await _metadataService.GetPlaylistTracksMetadata(id, title))
+        foreach (var track in await metadataService.GetPlaylistTracksMetadata(id, title))
         {
             var authors = track.Artists.Select(artist => artist.Name).Take(3).ToDelimitedString();
             yield return await Download(track.Title, track.Url, authors, title.ToPathSafeString());

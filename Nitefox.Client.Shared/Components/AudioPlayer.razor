@@ -3,13 +3,13 @@
 
 @inject MediaPlayerState MediaPlayerState
 
-<audio @onplay="@OnMediaPlay" autoplay src="@MediaPlayerState.StreamUrl"></audio>
+<audio @onplaying="@OnMediaPlay" autoplay src="@MediaPlayerState.StreamUrl"></audio>
 
 @code
 {
     protected override void OnInitialized()
     {
-        MediaPlayerState.PropertyChanged += (_, _) => StateHasChanged();
+        MediaPlayerState.PropertyChanged += async (_, _) => await InvokeAsync(StateHasChanged);
     }
 
     private void OnMediaPlay()

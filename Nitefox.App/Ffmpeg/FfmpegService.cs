@@ -16,16 +16,8 @@ using SharpCompress.Common;
 using SharpCompress.Readers;
 namespace Nitefox.App.Ffmpeg;
 
-public class FfmpegService
+public class FfmpegService(NitefoxConfig nitefoxConfig)
 {
-    private readonly NitefoxConfig _nitefoxConfig;
-
-    public FfmpegService(NitefoxConfig nitefoxConfig)
-    {
-        _nitefoxConfig = nitefoxConfig;
-        
-    }
-
     public async Task<bool> StreamConvert(string url, string fileName)
     {
         return await FFMpegArguments
@@ -38,14 +30,14 @@ public class FfmpegService
     {
         GlobalFFOptions.Configure(new FFOptions
         {
-            BinaryFolder = _nitefoxConfig.FfmpegLocation,
-            TemporaryFilesFolder = _nitefoxConfig.TempFilesLocation
+            BinaryFolder = nitefoxConfig.FfmpegLocation,
+            TemporaryFilesFolder = nitefoxConfig.TempFilesLocation
         });
     }
     
     public async Task<bool> DownloadFfmpeg()
     {
-        if (new DirectoryInfo(_nitefoxConfig.FfmpegLocation).EnumerateFiles()
+        if (new DirectoryInfo(nitefoxConfig.FfmpegLocation).EnumerateFiles()
                 .Count() >= 3)
         {
             return true;
@@ -76,7 +68,7 @@ public class FfmpegService
             releaseAsset = release.Assets.First(asset => asset.Name.EndsWith("osx-arm64.zip"));
         }
         
-        var downloadInfo = await AssetDownloader.Instance.DownloadAssetAsync(releaseAsset, _nitefoxConfig.FfmpegLocation);
+        var downloadInfo = await AssetDownloader.Instance.DownloadAssetAsync(releaseAsset, nitefoxConfig.FfmpegLocation);
 
         await Task.Run(async () =>
         {
@@ -87,7 +79,7 @@ public class FfmpegService
             {
                 if (!reader.Entry.IsDirectory)
                 {
-                    reader.WriteEntryToDirectory(_nitefoxConfig.FfmpegLocation, new ExtractionOptions()
+                    reader.WriteEntryToDirectory(nitefoxConfig.FfmpegLocation, new ExtractionOptions()
                     {
                         ExtractFullPath = true,
                         Overwrite = true

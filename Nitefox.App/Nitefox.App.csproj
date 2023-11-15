@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PublishAot>true</PublishAot>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,6 +18,7 @@
       <PackageReference Include="Russkyc.Configuration" Version="1.0.1" />
       <PackageReference Include="SharpCompress" Version="0.34.1" />
       <PackageReference Include="SpotifyExplode" Version="1.0.7" />
+      <PackageReference Include="TagLibSharp" Version="2.3.0" />
       <PackageReference Include="YoutubeExplode" Version="6.3.6" />
     </ItemGroup>
 

@@ -14,15 +14,8 @@ using SpotifyExplode.Search;
 
 namespace Nitefox.App.Media;
 
-public class MediaSearch
+public class MediaSearch(SpotifyClient spotifyClient)
 {
-    private readonly SpotifyClient _spotifyClient;
-
-    public MediaSearch(SpotifyClient spotifyClient)
-    {
-        _spotifyClient = spotifyClient;
-    }
-
     public async Task<IEnumerable<ISearchResult>> SearchAsync(string query, int limit = Int32.MaxValue, int skip = 0)
     {
         try
@@ -31,15 +24,15 @@ public class MediaSearch
 
             if (query.Contains("album", StringComparison.InvariantCultureIgnoreCase))
             {
-                return await _spotifyClient.Search.GetAlbumsAsync(cleanQuery, skip, limit);
+                return await spotifyClient.Search.GetAlbumsAsync(cleanQuery, skip, limit);
             }
 
             if (query.Contains("playlist", StringComparison.InvariantCultureIgnoreCase))
             {
-                return await _spotifyClient.Search.GetPlaylistsAsync(cleanQuery, skip, limit);
+                return await spotifyClient.Search.GetPlaylistsAsync(cleanQuery, skip, limit);
             }
 
-            return await _spotifyClient.Search.GetTracksAsync(cleanQuery, skip, limit);
+            return await spotifyClient.Search.GetTracksAsync(cleanQuery, skip, limit);
         }
         catch (Exception e)
         {

@@ -116,7 +116,6 @@
 
 @code{
 
-    private bool _isPlaying;
     private bool _isDownloaded;
     private bool _isDownloading;
     private bool _isPreviewStreamLoading;
@@ -154,7 +153,7 @@
                 _ => throw new ArgumentOutOfRangeException()
                 };
             await InvokeAsync(StateHasChanged);
-            MediaPlayerState.PropertyChanged += (_, _) => StateHasChanged();
+            MediaPlayerState.PropertyChanged += async (_, _) => await InvokeAsync(StateHasChanged);
         }
         catch (ArgumentOutOfRangeException e)
         {
@@ -175,7 +174,7 @@
         if (Type is ResultType.Track)
         {
             _isDownloading = true;
-            var track = await MediaDownloader.Download(Title, Url, Subtitle);
+            var track = await MediaDownloader.Download(Id, Title, Url, Subtitle);
             if (!track.IsDownloaded)
             {
                 _isDownloading = false;
@@ -271,8 +270,7 @@
 
     private async Task Preview()
     {
-        _isPlaying = !_isPlaying;
-        if (!_isPlaying)
+        if (MediaPlayerState.IsPlaying($"{Title} - {Subtitle}"))
         {
             MediaPlayerState.Stop();
             await InvokeAsync(StateHasChanged);
