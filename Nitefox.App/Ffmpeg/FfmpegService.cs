@@ -16,8 +16,16 @@ using SharpCompress.Common;
 using SharpCompress.Readers;
 namespace Nitefox.App.Ffmpeg;
 
-public class FfmpegService(NitefoxConfig nitefoxConfig)
+public class FfmpegService
 {
+    private readonly NitefoxConfig _nitefoxConfig;
+
+    public FfmpegService(NitefoxConfig nitefoxConfig)
+    {
+        _nitefoxConfig = nitefoxConfig;
+        
+    }
+
     public async Task<bool> StreamConvert(string url, string fileName)
     {
         return await FFMpegArguments
@@ -30,14 +38,14 @@ public class FfmpegService(NitefoxConfig nitefoxConfig)
     {
         GlobalFFOptions.Configure(new FFOptions
         {
-            BinaryFolder = nitefoxConfig.FfmpegLocation,
-            TemporaryFilesFolder = nitefoxConfig.TempFilesLocation
+            BinaryFolder = _nitefoxConfig.FfmpegLocation,
+            TemporaryFilesFolder = _nitefoxConfig.TempFilesLocation
         });
     }
     
     public async Task<bool> DownloadFfmpeg()
     {
-        if (new DirectoryInfo(nitefoxConfig.FfmpegLocation).EnumerateFiles()
+        if (new DirectoryInfo(_nitefoxConfig.FfmpegLocation).EnumerateFiles()
                 .Count() >= 3)
         {
             return true;
@@ -68,7 +76,7 @@ public class FfmpegService(NitefoxConfig nitefoxConfig)
             releaseAsset = release.Assets.First(asset => asset.Name.EndsWith("osx-arm64.zip"));
         }
         
-        var downloadInfo = await AssetDownloader.Instance.DownloadAssetAsync(releaseAsset, nitefoxConfig.FfmpegLocation);
+        var downloadInfo = await AssetDownloader.Instance.DownloadAssetAsync(releaseAsset, _nitefoxConfig.FfmpegLocation);
 
         await Task.Run(async () =>
         {
@@ -79,7 +87,7 @@ public class FfmpegService(NitefoxConfig nitefoxConfig)
             {
                 if (!reader.Entry.IsDirectory)
                 {
-                    reader.WriteEntryToDirectory(nitefoxConfig.FfmpegLocation, new ExtractionOptions()
+                    reader.WriteEntryToDirectory(_nitefoxConfig.FfmpegLocation, new ExtractionOptions()
                     {
                         ExtractFullPath = true,
                         Overwrite = true

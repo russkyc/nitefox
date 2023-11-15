@@ -22,6 +22,7 @@ public partial class MediaPlayerState
     {
         Track = track;
         StreamUrl = url;
+        Loaded = true;
     }
     
     public void Stop()

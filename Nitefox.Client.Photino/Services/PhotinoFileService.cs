@@ -16,18 +16,26 @@ using Nitefox.App.Services.Interfaces;
 
 namespace Nitefox.Client.Photino.Services;
 
-public class PhotinoFileService(NitefoxConfig nitefoxConfig) : IFileService
+public class PhotinoFileService : IFileService
 {
-    public Task<string> OpenFolder()
+    private readonly NitefoxConfig _nitefoxConfig;
+
+    public PhotinoFileService(NitefoxConfig nitefoxConfig)
+    {
+        _nitefoxConfig = nitefoxConfig;
+        SetupDirectories();
+    }
+    
+    public async Task<string> OpenFolder()
     {
         try
         {
             var path = Program.App.MainWindow.ShowOpenFolder();
-            return Task.FromResult(path[0]);
+            return path[0];
         }
         catch (Exception)
         {
-            return Task.FromResult("");
+            return "";
         }
     }
     
@@ -46,34 +54,34 @@ public class PhotinoFileService(NitefoxConfig nitefoxConfig) : IFileService
 
     public void SetupDirectories()
     {
-        if (string.IsNullOrWhiteSpace(nitefoxConfig.DownloadLocation))
+        if (string.IsNullOrWhiteSpace(_nitefoxConfig.DownloadLocation))
         {
-            nitefoxConfig.DownloadLocation = Environment.CurrentDirectory + "\\songs\\";
+            _nitefoxConfig.DownloadLocation = Environment.CurrentDirectory + "\\songs\\";
         }
         
-        if (!Directory.Exists(nitefoxConfig.DownloadLocation))
+        if (!Directory.Exists(_nitefoxConfig.DownloadLocation))
         {
-            Directory.CreateDirectory(nitefoxConfig.DownloadLocation);
+            Directory.CreateDirectory(_nitefoxConfig.DownloadLocation);
         }
 
-        if (string.IsNullOrWhiteSpace(nitefoxConfig.TempFilesLocation))
+        if (string.IsNullOrWhiteSpace(_nitefoxConfig.TempFilesLocation))
         {
-            nitefoxConfig.TempFilesLocation = Environment.CurrentDirectory + "\\temp\\";
+            _nitefoxConfig.TempFilesLocation = Environment.CurrentDirectory + "\\temp\\";
         }
         
-        if (!Directory.Exists(nitefoxConfig.TempFilesLocation))
+        if (!Directory.Exists(_nitefoxConfig.TempFilesLocation))
         {
-            Directory.CreateDirectory(nitefoxConfig.TempFilesLocation);
+            Directory.CreateDirectory(_nitefoxConfig.TempFilesLocation);
         }
 
-        if (string.IsNullOrWhiteSpace(nitefoxConfig.FfmpegLocation))
+        if (string.IsNullOrWhiteSpace(_nitefoxConfig.FfmpegLocation))
         {
-            nitefoxConfig.FfmpegLocation = Environment.CurrentDirectory + "\\ffmpeg\\";
+            _nitefoxConfig.FfmpegLocation = Environment.CurrentDirectory + "\\ffmpeg\\";
         }
         
-        if (!Directory.Exists(nitefoxConfig.FfmpegLocation))
+        if (!Directory.Exists(_nitefoxConfig.FfmpegLocation))
         {
-            Directory.CreateDirectory(nitefoxConfig.FfmpegLocation);
+            Directory.CreateDirectory(_nitefoxConfig.FfmpegLocation);
         }
     }
 }

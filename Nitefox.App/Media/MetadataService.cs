@@ -15,17 +15,26 @@ using YoutubeExplode.Videos.Streams;
 
 namespace Nitefox.App.Media;
 
-public class MetadataService(SpotifyClient spotifyClient, YoutubeClient youtubeClient)
+public class MetadataService
 {
+    private readonly SpotifyClient _spotifyClient;
+    private readonly YoutubeClient _youtubeClient;
+
+    public MetadataService(SpotifyClient spotifyClient, YoutubeClient youtubeClient)
+    {
+        _spotifyClient = spotifyClient;
+        _youtubeClient = youtubeClient;
+    }
+
     public async Task<int> GetAlbumTrackCount(string id)
     {
-        var album = await spotifyClient.Albums.GetAsync(id);
+        var album = await _spotifyClient.Albums.GetAsync(id);
         return album.Tracks.Count;
     }
     
     public async Task<int> GetPlaylistTrackCount(string id)
     {
-        var playlists = await spotifyClient.Playlists.GetAsync(id);
+        var playlists = await _spotifyClient.Playlists.GetAsync(id);
         return playlists.Tracks.Count;
     }
 
@@ -33,7 +42,7 @@ public class MetadataService(SpotifyClient spotifyClient, YoutubeClient youtubeC
     {
         try
         {
-            var album = await spotifyClient.Albums.GetAsync(id);
+            var album = await _spotifyClient.Albums.GetAsync(id);
             var image = album.Images.FirstOrDefault(image => !string.IsNullOrWhiteSpace(image.Url));
             if (image is null) return string.Empty;
             return image.Url;
@@ -52,7 +61,7 @@ public class MetadataService(SpotifyClient spotifyClient, YoutubeClient youtubeC
     {
         try
         {
-            var tracks = await spotifyClient.Playlists.GetTracksAsync(id, limit: 5);
+            var tracks = await _spotifyClient.Playlists.GetTracksAsync(id, limit: 5);
             var playlistImages = tracks.SelectMany(track => track.Album.Images)
                 .Where(image => !string.IsNullOrWhiteSpace(image.Url));
             var image = playlistImages.FirstOrDefault(image => !string.IsNullOrWhiteSpace(image.Url));
@@ -71,15 +80,15 @@ public class MetadataService(SpotifyClient spotifyClient, YoutubeClient youtubeC
 
     public async Task<string> GetYoutubeSongStream(string url)
     {
-        var youtubeId = await spotifyClient.Tracks.GetYoutubeIdAsync(url);
-        var streamManifest = await youtubeClient.Videos.Streams.GetManifestAsync($"https://youtube.com/watch?v={youtubeId}");
+        var youtubeId = await _spotifyClient.Tracks.GetYoutubeIdAsync(url);
+        var streamManifest = await _youtubeClient.Videos.Streams.GetManifestAsync($"https://youtube.com/watch?v={youtubeId}");
         return streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate().Url;
     }
     
     public async Task<string> GetPreviewStream(string url)
     {
-        var youtubeId = await spotifyClient.Tracks.GetYoutubeIdAsync(url);
-        var streamManifest = await youtubeClient.Videos.Streams.GetManifestAsync($"https://youtube.com/watch?v={youtubeId}");
+        var youtubeId = await _spotifyClient.Tracks.GetYoutubeIdAsync(url);
+        var streamManifest = await _youtubeClient.Videos.Streams.GetManifestAsync($"https://youtube.com/watch?v={youtubeId}");
         return streamManifest.GetAudioOnlyStreams()
             .OrderByDescending(stream => stream.Size)
             .First().Url;
@@ -87,14 +96,14 @@ public class MetadataService(SpotifyClient spotifyClient, YoutubeClient youtubeC
 
     public async Task<IEnumerable<Track>> GetAlbumTracksMetadata(string id, string title)
     {
-        var tracks = await spotifyClient.Albums.GetAllTracksAsync(id);
+        var tracks = await _spotifyClient.Albums.GetAllTracksAsync(id);
         return tracks.AsEnumerable();
     }
     
     
     public async Task<IEnumerable<Track>> GetPlaylistTracksMetadata(string id, string title)
     {
-        var tracks = await spotifyClient.Playlists.GetAllTracksAsync(id);
+        var tracks = await _spotifyClient.Playlists.GetAllTracksAsync(id);
         return tracks.AsEnumerable();
     }
     

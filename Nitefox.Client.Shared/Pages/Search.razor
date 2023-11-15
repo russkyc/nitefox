@@ -2,7 +2,6 @@
 
 @using Nitefox.App.Media
 @using Nitefox.App.Media.Types
-@using Nitefox.App.Services.Interfaces
 @using Nitefox.App.States
 @using Nitefox.App.Utilities
 @using Nitefox.Client.Shared.Components.Search
@@ -10,7 +9,6 @@
 
 @inject MediaSearch MediaSearch
 @inject SearchState SearchState
-@inject IFileService FileService
 @inject MediaPlayerState MediaPlayerState
 
 <Animation Effect="@Effect.FadeIn" Speed="@Speed.Faster" Delay="@Delay.None" Class="flex h-full flex-col overflow-hidden">
@@ -69,7 +67,6 @@
     {
         MediaPlayerState.PropertyChanged += (_, _) => StateHasChanged();
         SearchState.PropertyChanged += (_, _) => StateHasChanged();
-        FileService.SetupDirectories();
     }
 
     private async Task OnSearch()
