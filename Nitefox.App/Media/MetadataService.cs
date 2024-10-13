@@ -78,11 +78,10 @@ public class MetadataService
         }
     }
 
-    public async Task<string> GetYoutubeSongStream(string url)
+    public async Task<string?> GetYoutubeSongStream(string url)
     {
-        var youtubeId = await _spotifyClient.Tracks.GetYoutubeIdAsync(url);
-        var streamManifest = await _youtubeClient.Videos.Streams.GetManifestAsync($"https://youtube.com/watch?v={youtubeId}");
-        return streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate().Url;
+        var stream = await _spotifyClient.Tracks.GetDownloadUrlAsync(url);
+        return stream;
     }
     
     public async Task<string> GetPreviewStream(string url)
