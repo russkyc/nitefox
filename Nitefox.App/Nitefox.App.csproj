@@ -17,7 +17,7 @@
       <PackageReference Include="Russkyc.Configuration" Version="1.0.1" />
       <PackageReference Include="SharpCompress" Version="0.38.0" />
       <PackageReference Include="SpotifyExplode" Version="1.1.2" />
-      <PackageReference Include="YoutubeExplode" Version="6.4.3" />
+      <PackageReference Include="YoutubeExplode" Version="6.5.0" />
     </ItemGroup>
 
     <ItemGroup>
