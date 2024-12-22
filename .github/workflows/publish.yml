@@ -1,0 +1,116 @@
+﻿name: Publish
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  
+  build-windows:
+    permissions:
+      contents: write
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Get version
+        id: package_version
+        uses: KageKirin/get-csproj-version@v0
+        with:
+          file: D:\a\nitefox\nitefox\Nitefox.Client.Photino\Nitefox.Client.Photino.csproj
+
+      - name: Setup PupNet
+        run: dotnet tool install -g KuiperZone.PupNet
+
+      - name: Build x86 Zip
+        run: pupnet -r win-x86 -y -k zip -v ${{ steps.package_version.outputs.version }} -o nitefox-win-${{ steps.package_version.outputs.version }}-x86.zip
+
+      - name: Build x64 Zip
+        run: pupnet -r win-x64 -y -k zip -v ${{ steps.package_version.outputs.version }} -o nitefox-win-${{ steps.package_version.outputs.version }}-x64.zip
+
+      - name: Build x86 Setup
+        run: pupnet -r win-x86 -y -k setup -v ${{ steps.package_version.outputs.version }} -o nitefox-win-${{ steps.package_version.outputs.version }}-installer-x86.exe
+
+      - name: Build x64 Setup
+        run: pupnet -r win-x64 -y -k setup -v ${{ steps.package_version.outputs.version }} -o nitefox-win-${{ steps.package_version.outputs.version }}-installer-x64.exe
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: '🎉 Nitefox ${{ steps.package_version.outputs.version }} Windows Release'
+          body: 'Latest windows builds for Nitefox PDF'
+          tag_name: 'v${{ steps.package_version.outputs.version }}-win'
+          files: |
+            D:/a/nitefox/nitefox/Deploy/bin/nitefox-win-${{ steps.package_version.outputs.version }}-x86.zip
+            D:/a/nitefox/nitefox/Deploy/bin/nitefox-win-${{ steps.package_version.outputs.version }}-x64.zip
+            D:/a/nitefox/nitefox/Deploy/bin/nitefox-win-${{ steps.package_version.outputs.version }}-installer-x86.exe
+            D:/a/nitefox/nitefox/Deploy/bin/nitefox-win-${{ steps.package_version.outputs.version }}-installer-x64.exe
+  
+  build-linux:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Get version
+        id: package_version
+        uses: KageKirin/get-csproj-version@v0
+        with:
+          file: /home/runner/work/nitefox/nitefox/Nitefox.Client.Photino/Nitefox.Client.Photino.csproj
+
+      - name: Install Dpkg
+        run: sudo apt install dpkg
+
+      - name: Install Rpm
+        run: sudo apt install rpm
+
+      - name: Install Fuse
+        run: sudo apt install fuse libfuse2
+
+      - name: Setup PupNet
+        run: dotnet tool install -g KuiperZone.PupNet
+
+      - name: Build x64 Zip
+        run: pupnet Nitefox.Pupnet.conf -r linux-x64 -y -k zip -v ${{ steps.package_version.outputs.version }} -o nitefox-linux-${{ steps.package_version.outputs.version }}-x64.zip
+
+      - name: Build x64 AppImage
+        run: pupnet Nitefox.Pupnet.conf -r linux-x64 -y -k appimage -v ${{ steps.package_version.outputs.version }} -o nitefox-linux-${{ steps.package_version.outputs.version }}-x64.appimage
+
+      - name: Build x64 Deb
+        run: pupnet Nitefox.Pupnet.conf -r linux-x64 -y -k deb -v ${{ steps.package_version.outputs.version }} -o nitefox-linux-${{ steps.package_version.outputs.version }}-x64.deb
+
+      - name: Build x64 Rpm
+        run: pupnet Nitefox.Pupnet.conf -r linux-x64 -y -k rpm -v ${{ steps.package_version.outputs.version }} -o nitefox-linux-${{ steps.package_version.outputs.version }}-x64.rpm
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: '🎉 Nitefox PDF ${{ steps.package_version.outputs.version }} Linux Release'
+          body: 'Latest Linux builds for Nitefox PDF'
+          tag_name: 'v${{ steps.package_version.outputs.version }}-linux'
+          files: |
+            /home/runner/work/nitefox/nitefox/Deploy/bin/nitefox-linux-${{ steps.package_version.outputs.version }}-x64.zip
+            /home/runner/work/nitefox/nitefox/Deploy/bin/nitefox-linux-${{ steps.package_version.outputs.version }}-x64.appimage
+            /home/runner/work/nitefox/nitefox/Deploy/bin/nitefox-linux-${{ steps.package_version.outputs.version }}-x64.deb
+            /home/runner/work/nitefox/nitefox/Deploy/bin/nitefox-linux-${{ steps.package_version.outputs.version }}-x64.rpm

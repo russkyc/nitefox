@@ -4,6 +4,7 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
         <ApplicationIcon>nitefox_icon.ico</ApplicationIcon>
+        <Version>1.1.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
