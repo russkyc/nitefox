@@ -30,7 +30,7 @@ public class PhotinoFileService : IFileService
     {
         try
         {
-            var path = Program.App.MainWindow.ShowOpenFolder();
+            var path = await Program.App.MainWindow.ShowOpenFolderAsync();
             return path[0];
         }
         catch (Exception)
