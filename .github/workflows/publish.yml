@@ -33,14 +33,8 @@ jobs:
       - name: Setup PupNet
         run: dotnet tool install -g KuiperZone.PupNet
 
-      - name: Build x86 Zip
-        run: pupnet -r win-x86 -y -k zip -v ${{ steps.package_version.outputs.version }} -o nitefox-win-${{ steps.package_version.outputs.version }}-x86.zip
-
       - name: Build x64 Zip
         run: pupnet -r win-x64 -y -k zip -v ${{ steps.package_version.outputs.version }} -o nitefox-win-${{ steps.package_version.outputs.version }}-x64.zip
-
-      - name: Build x86 Setup
-        run: pupnet -r win-x86 -y -k setup -v ${{ steps.package_version.outputs.version }} -o nitefox-win-${{ steps.package_version.outputs.version }}-installer-x86.exe
 
       - name: Build x64 Setup
         run: pupnet -r win-x64 -y -k setup -v ${{ steps.package_version.outputs.version }} -o nitefox-win-${{ steps.package_version.outputs.version }}-installer-x64.exe
