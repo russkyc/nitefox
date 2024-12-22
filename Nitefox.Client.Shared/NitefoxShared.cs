@@ -4,11 +4,8 @@ using MudExtensions.Services;
 using Nitefox.App.Configuration;
 using Nitefox.App.Ffmpeg;
 using Nitefox.App.Media;
-using Nitefox.App.Services;
 using Nitefox.App.States;
-using Nitefox.Client.Shared.Pages;
 using SpotifyExplode;
-using YoutubeExplode;
 
 namespace Nitefox.Client.Shared
 {
@@ -19,7 +16,6 @@ namespace Nitefox.Client.Shared
             return collection.AddSingleton(_ => new SpotifyClient())
                 .AddMudServices()
                 .AddMudExtensions()
-                .AddSingleton(_ => new YoutubeClient())
                 .AddSingleton<SearchState>()
                 .AddSingleton<NitefoxConfig>()
                 .AddSingleton<FfmpegService>()
