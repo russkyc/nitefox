@@ -49,7 +49,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: '🎉 Nitefox ${{ steps.package_version.outputs.version }} Windows Release'
-          body: 'Latest windows builds for Nitefox PDF'
+          body: 'Latest windows builds for Nitefox'
           tag_name: 'v${{ steps.package_version.outputs.version }}-win'
           files: |
             D:/a/nitefox/nitefox/Deploy/bin/nitefox-win-${{ steps.package_version.outputs.version }}-x86.zip
@@ -106,8 +106,8 @@ jobs:
       - name: Publish Release
         uses: softprops/action-gh-release@v1
         with:
-          name: '🎉 Nitefox PDF ${{ steps.package_version.outputs.version }} Linux Release'
-          body: 'Latest Linux builds for Nitefox PDF'
+          name: '🎉 Nitefox ${{ steps.package_version.outputs.version }} Linux Release'
+          body: 'Latest Linux builds for Nitefox'
           tag_name: 'v${{ steps.package_version.outputs.version }}-linux'
           files: |
             /home/runner/work/nitefox/nitefox/Deploy/bin/nitefox-linux-${{ steps.package_version.outputs.version }}-x64.zip
