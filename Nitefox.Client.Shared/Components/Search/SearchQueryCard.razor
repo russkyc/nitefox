@@ -283,6 +283,7 @@
         await InvokeAsync(StateHasChanged);
             
         var stream = await MetadataService.GetPreviewStream(Url);
+        if (stream is null) return;
         MediaPlayerState.Play($"{Title} - {Subtitle}", stream);
         _isPreviewStreamLoading = false;
         await InvokeAsync(StateHasChanged);
