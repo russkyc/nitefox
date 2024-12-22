@@ -20,8 +20,8 @@ With Nitefox, you can easily download entire spotify playlists or individual tra
 
 #### Desktop
 
-- [x] Windows
-- [ ] Linux (Build supported, not yet tested)
+- [x] Windows (Installer, Portable)
+- [x] Linux (Deb, RPM, AppImage)
 - [ ] Mac/Metal (Build supported, not yet tested)
 
 
