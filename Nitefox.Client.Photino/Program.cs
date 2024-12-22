@@ -25,6 +25,8 @@ namespace Nitefox.Client.Photino
 
             // customize window
             app.MainWindow
+                .SetMinWidth(650)
+                .SetMinHeight(700)
                 .SetContextMenuEnabled(false)
                 .SetIconFile("nitefox_icon.ico")
                 .SetTitle("Nitefox");
