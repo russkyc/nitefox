@@ -55,6 +55,10 @@ public class MetadataService
         {
             return string.Empty;
         }
+        catch (Exception)
+        {
+            return string.Empty;
+        }
     }
     
     public async Task<string> GetPlaylistImageUrl(string id)
