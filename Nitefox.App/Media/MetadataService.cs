@@ -10,20 +10,15 @@
 
 using SpotifyExplode;
 using SpotifyExplode.Tracks;
-using YoutubeExplode;
-using YoutubeExplode.Videos.Streams;
-
 namespace Nitefox.App.Media;
 
 public class MetadataService
 {
     private readonly SpotifyClient _spotifyClient;
-    private readonly YoutubeClient _youtubeClient;
 
-    public MetadataService(SpotifyClient spotifyClient, YoutubeClient youtubeClient)
+    public MetadataService(SpotifyClient spotifyClient)
     {
         _spotifyClient = spotifyClient;
-        _youtubeClient = youtubeClient;
     }
 
     public async Task<int> GetAlbumTrackCount(string id)
@@ -52,6 +47,10 @@ public class MetadataService
             return string.Empty;
         }
         catch (InvalidOperationException)
+        {
+            return string.Empty;
+        }
+        catch (Exception)
         {
             return string.Empty;
         }
@@ -84,13 +83,10 @@ public class MetadataService
         return stream;
     }
     
-    public async Task<string> GetPreviewStream(string url)
+    public async Task<string?> GetPreviewStream(string url)
     {
-        var youtubeId = await _spotifyClient.Tracks.GetYoutubeIdAsync(url);
-        var streamManifest = await _youtubeClient.Videos.Streams.GetManifestAsync($"https://youtube.com/watch?v={youtubeId}");
-        return streamManifest.GetAudioOnlyStreams()
-            .OrderByDescending(stream => stream.Size)
-            .First().Url;
+        var previewStream = await _spotifyClient.Tracks.GetDownloadUrlAsync(url);
+        return previewStream;
     }
 
     public async Task<IEnumerable<Track>> GetAlbumTracksMetadata(string id, string title)
