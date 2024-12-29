@@ -1,4 +1,7 @@
-﻿Nitefox 1.1.1 Release
+﻿Nitefox 1.1.2 Release
+- Fix start menu duplicate app entries on windows
+
+Nitefox 1.1.1 Release
 - Fix zip and installer versions not running
 
 Nitefox 1.1.0 Release

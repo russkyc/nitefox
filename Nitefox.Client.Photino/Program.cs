@@ -4,6 +4,7 @@ using Nitefox.App.Services.Interfaces;
 using Nitefox.Client.Photino.Services;
 using Nitefox.Client.Shared;
 using Photino.Blazor;
+using Photino.NET;
 
 namespace Nitefox.Client.Photino
 {
@@ -29,14 +30,20 @@ namespace Nitefox.Client.Photino
                 .SetMinHeight(700)
                 .SetContextMenuEnabled(false)
                 .SetIconFile("nitefox_icon.ico")
-                .SetTitle("Nitefox");
+                .SetTitle(""); // To avoid creating a start menu shortcut
             
             app.MainWindow.Centered = true;
             app.MainWindow.GrantBrowserPermissions = true;
+            app.MainWindow.WindowCreated += (sender, _) =>
+            {
+                // Set title after window is created to avoid errors
+                if (sender is not PhotinoWindow window) return;
+                window.Title = "Nitefox";
+            };
 
             App = app;
 
-            AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
+            AppDomain.CurrentDomain.UnhandledException += (_, error) =>
             {
                 app.MainWindow.ShowMessage("Fatal exception", error.ExceptionObject.ToString());
             };
